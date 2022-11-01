@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#PBS -N FLUENT_DLR
+#PBS -o output_f
+#PBS -j oe
+#PBS -l nodes=2:ppn=64
+#PBS -m ae
+#PBS -M 2976367208@qq.com
+
+source /home/wanglei/.bashrc
+conda activate sm_optimized
+cd  $PBS_O_WORKDIR
+date > output.log 2>&1
+
+export NP=`wc -l < $PBS_NODEFILE`
+fluent 3ddp -g -ssh -pdefault -t$NP -cnf=$PBS_NODEFILE -i test.jou -cflush >>output.log 2>&1
+conda deactivate
+date >> output.log 2>&1
