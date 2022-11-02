@@ -1,0 +1,178 @@
+# 传入路径
+!$rootpath = rootpath-seed;
+!$jobname = jobname-seed;
+!$resultdir = resultdir-seed;
+!$datapath = $rootpath.$jobname.".dat.h5";
+!$pic_vel = $resultdir."vel.png";
+!print "$pic_vel\n";
+
+
+# import data
+DATA READER:
+  Clear All Objects = false
+  Append Results = false
+  Edit Case Names = false
+  Multi Configuration File Load Option = Single Case
+  Open in New View = true
+  Keep Camera Position = true
+  Load Particle Tracks = true
+  Multi Configuration File Load Option = Single Case
+  Construct Variables From Fourier Coefficients = true
+  Open to Compare = false
+  Files to Compare =
+END
+>load filename=$datapath, force_reload=true
+
+
+VIEW:View 1
+  Camera Mode = User Specified
+  CAMERA:
+    Option = Pivot Point and Quaternion
+    Pivot Point = -1.99042e-05, 0.14375, -0.000338085
+    Scale = 6.32411
+    Pan = 0, 0
+    Rotation Quaternion = 0, 0, 0, 1
+  END
+END
+
+PLANE:Plane 1
+  Apply Instancing Transform = On
+  Apply Texture = Off
+  Blend Texture = On
+  Bound Radius = 0.5 [m]
+  Colour = 0.75, 0.75, 0.75
+  Colour Map = Default Colour Map
+  Colour Mode = Constant
+  Colour Scale = Linear
+  Colour Variable = Pressure
+  Colour Variable Boundary Values = Conservative
+  Culling Mode = No Culling
+  Direction 1 Bound = 1.0 [m]
+  Direction 1 Orientation = 0 [degree]
+  Direction 1 Points = 10
+  Direction 2 Bound = 1.0 [m]
+  Direction 2 Points = 10
+  Domain List = /DOMAIN GROUP:All Domains
+  Draw Contours = Off
+  Draw Faces = On
+  Draw Lines = Off
+  Instancing Transform = /DEFAULT INSTANCE TRANSFORM:Default Transform
+  Invert Plane Bound = Off
+  Lighting = On
+  Line Colour = 0, 0, 0
+  Line Colour Mode = Default
+  Line Width = 1
+  Max = 0.0
+  Min = 0.0
+  Normal = 1 , 0 , 0
+  Number of Contours = 11
+  Option = XY Plane
+  Plane Bound = None
+  Plane Type = Slice
+  Point = 0 [m], 0 [m], 0 [m]
+  Point 1 = 0 [m], 0 [m], 0 [m]
+  Point 2 = 1 [m], 0 [m], 0 [m]
+  Point 3 = 0 [m], 1 [m], 0 [m]
+  Range = Global
+  Render Edge Angle = 0 [degree]
+  Specular Lighting = On
+  Surface Drawing = Smooth Shading
+  Texture Angle = 0
+  Texture Direction = 0 , 1 , 0
+  Texture File =
+  Texture Material = Metal
+  Texture Position = 0 , 0
+  Texture Scale = 1
+  Texture Type = Predefined
+  Tile Texture = Off
+  Transform Texture = Off
+  Transparency = 0.0
+  X = 0.0 [m]
+  Y = 0.0 [m]
+  Z = 0 [m]
+  OBJECT VIEW TRANSFORM:
+    Apply Reflection = Off
+    Apply Rotation = Off
+    Apply Scale = Off
+    Apply Translation = Off
+    Principal Axis = Z
+    Reflection Plane Option = XY Plane
+    Rotation Angle = 0.0 [degree]
+    Rotation Axis From = 0 [m], 0 [m], 0 [m]
+    Rotation Axis To = 0 [m], 0 [m], 0 [m]
+    Rotation Axis Type = Principal Axis
+    Scale Vector = 1 , 1 , 1
+    Translation Vector = 0 [m], 0 [m], 0 [m]
+    X = 0.0 [m]
+    Y = 0.0 [m]
+    Z = 0.0 [m]
+  END
+END
+
+CONTOUR:Contour 1
+  Apply Instancing Transform = On
+  Clip Contour = Off
+  Colour Map = Default Colour Map
+  Colour Scale = Linear
+  Colour Variable = Velocity
+  Colour Variable Boundary Values = Conservative
+  Constant Contour Colour = Off
+  Contour Range = Global
+  Culling Mode = No Culling
+  Domain List = /DOMAIN GROUP:All Domains
+  Draw Contours = On
+  Font = Sans Serif
+  Fringe Fill = On
+  Instancing Transform = /DEFAULT INSTANCE TRANSFORM:Default Transform
+  Lighting = On
+  Line Colour = 0, 0, 0
+  Line Colour Mode = Default
+  Line Width = 1
+  Location List = /PLANE:Plane 1
+  Max = 0.0 [m s^-1]
+  Min = 0.0 [m s^-1]
+  Number of Contours = 11
+  Show Numbers = Off
+  Specular Lighting = On
+  Surface Drawing = Smooth Shading
+  Text Colour = 0, 0, 0
+  Text Colour Mode = Default
+  Text Height = 0.024
+  Transparency = 0.0
+  Use Face Values = Off
+  Value List = 0 [m s^-1],1 [m s^-1]
+  OBJECT VIEW TRANSFORM:
+    Apply Reflection = Off
+    Apply Rotation = Off
+    Apply Scale = Off
+    Apply Translation = Off
+    Principal Axis = Z
+    Reflection Plane Option = XY Plane
+    Rotation Angle = 0.0 [degree]
+    Rotation Axis From = 0 [m], 0 [m], 0 [m]
+    Rotation Axis To = 0 [m], 0 [m], 0 [m]
+    Rotation Axis Type = Principal Axis
+    Scale Vector = 1 , 1 , 1
+    Translation Vector = 0 [m], 0 [m], 0 [m]
+    X = 0.0 [m]
+    Y = 0.0 [m]
+    Z = 0.0 [m]
+  END
+END
+
+## save picture
+HARDCOPY:
+  Antialiasing = On
+  Hardcopy Filename = $pic_vel
+  Hardcopy Format = png
+  Hardcopy Tolerance = 0.0001
+  Image Height = 600
+  Image Scale = 98
+  Image Width = 600
+  JPEG Image Quality = 80
+  Use Screen Size = On
+  White Background = On
+END
+
+>print
+!print "cfdpost work over";

@@ -12,7 +12,30 @@ conda activate sm_optimized
 cd  $PBS_O_WORKDIR
 date > output.log 2>&1
 
+export RESULTDIR=$PBS_O_WORKDIR/results
+mkdir $RESULTDIR
+
 export NP=`wc -l < $PBS_NODEFILE`
-fluent 3ddp -g -ssh -pdefault -t$NP -cnf=$PBS_NODEFILE -i test.jou -cflush >>output.log 2>&1
+#生成本次任务的控制脚本
+python pathconvey.py $PBS_O_WORKDIR $PBS_JOBNAME $RESULTDIR
+
+# 将输入参数传入网格和fluent
+python input.py
+
+fluent 3ddp -g -ssh -pdefault -t$NP -cnf=$PBS_NODEFILE -i $PBS_JOBNAME.jou -cflush >>output.log 2>&1
+
+##这里需要考虑cfdpost读入数据名字不同
+cfdpost -batch $PBS_JOBNAME.cse
+
+#生成output文件输出参数结果给代理模型
+python output.py
+
 conda deactivate
+
+
+mv *.h5 $RESULTDIR
+mv $PBS_JOBNAME* $RESULTDIR
+mv output.log $RESULTDIR
+mv $RESULTDIR $RESULTDIR-$PBS_JOBNAME
+
 date >> output.log 2>&1
