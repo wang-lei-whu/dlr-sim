@@ -13,7 +13,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["/home/wanglei/dlr-sim/cfd-sim","test-auto-dlr"]
+            "args": ["./cfd-sim","test-auto-dlr","./cfd-sim/results"]
         }
     ]
 }

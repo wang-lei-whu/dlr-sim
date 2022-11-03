@@ -1,6 +1,6 @@
-(define name jobname-seed)
-(define path rootpath-seed)
-(define resultdir resultdir-seed)
+(define name "test-auto-dlr/")
+(define path "./cfd-sim/")
+(define resultdir "./cfd-sim/results/")
 
 ;to read the case and data file
 (define casefile (string-append "rc " path name ".cas.h5"))
