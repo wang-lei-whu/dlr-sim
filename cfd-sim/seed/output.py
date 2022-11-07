@@ -1,7 +1,7 @@
 '''
 Author: wanglei
 Date: 2022-11-03 15:59:29
-LastEditTime: 2022-11-03 21:05:07
+LastEditTime: 2022-11-07 17:50:45
 Description: output workflow definition
 '''
 
@@ -25,6 +25,20 @@ def fluentoutputs(dict,file)->np.ndarray:
                     dict0.pop(key)
                     break
     return output
+
+def casesDataAppend(output,file,input):
+    x=', '.join([str(t) for t in input.tolist()])
+    y=', '.join([str(t) for t in output.tolist()])
+    with open(file,'r') as fid:
+        n = len(fid.readlines())
+    with open(file,'a') as fid:
+        line = str(n)+', '+ x+', '+y+'\n'
+        fid.write(line)
+    print("\n-----------------------------------------------------------------------")
+    print("\nBoth input and output values have been added into %s successfully!\n"%file)
+    print("-----------------------------------------------------------------------\n")
+
+
 
 
 

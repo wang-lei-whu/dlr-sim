@@ -2,7 +2,7 @@
 (define path ./cfd-sim/)
 (define resultdir ./cfd-sim/results/)
 
-;to read the case and data file
+;to read the exited case and data file
 (define casefile (string-append "rc " path name ".cas.h5"))
 (define datfile (string-append "rd " path name ".dat.h5"))
 (ti-menu-load-string casefile)

@@ -1,7 +1,7 @@
 <!--
  * @Author: wanglei
  * @Date: 2022-11-03 15:59:29
- * @LastEditTime: 2022-11-03 19:32:36
+ * @LastEditTime: 2022-11-07 17:08:16
  * @Description: readme
 -->
 # dlr-sim
@@ -13,3 +13,5 @@ some codes used for simulating DLR model combustion chamber with FLUENT
 |0|air flow|0.01762 10%|
 |1|fuel flow|0.000696 10%|
 |2|inlet temperature|330K 0-300K|
+
+## output编码表

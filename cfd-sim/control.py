@@ -1,11 +1,11 @@
 '''
 Author: wanglei
 Date: 2022-11-03 20:41:44
-LastEditTime: 2022-11-07 16:41:32
+LastEditTime: 2022-11-07 17:54:47
 Description: Do not edit
 '''
 from seed.pathconvey import alter, pathconvey
-from seed.output import outputdict, fluentoutputs
+from seed.output import outputdict, fluentoutputs,casesDataAppend
 from seed.input import inputdict, input4fluent, inputparas
 
 import sys, os
@@ -39,5 +39,9 @@ if __name__ == '__main__':
         input4fluent(INPUT, inputdict, '%s/%s.jou' % (rootpath, jobname))
     elif module == "output":
         ## 读取输出表
+        INPUT = inputparas('%s/input' % rootpath)
         OUTPUT = fluentoutputs(outputdict, '%s/fluent-outputs.out' % resultdir)
-        print(OUTPUT)
+        ## 将输入输出写入cases文件
+        casesDataAppend(OUTPUT,'%s/seed/casesdata.dat'%rootpath,INPUT)
+    elif module == "optimize":
+        ## 根据cases文件生成
