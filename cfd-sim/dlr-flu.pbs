@@ -1,3 +1,9 @@
+###
+ # @Author: wanglei
+ # @Date: 2022-11-03 15:59:29
+ # @LastEditTime: 2022-11-07 15:41:05
+ # @Description: Do not edit
+### 
 #!/bin/bash
 
 #PBS -N FLUENT_DLR
@@ -15,12 +21,14 @@ date > output.log 2>&1
 export RESULTDIR=$PBS_O_WORKDIR/results
 mkdir $RESULTDIR
 
+# 检查核数
 export NP=`wc -l < $PBS_NODEFILE`
-#生成本次任务的控制脚本
-python pathconvey.py $PBS_O_WORKDIR $PBS_JOBNAME $RESULTDIR
+
+#生成本次任务的控制脚本并输入参数
+python3 control.py $PBS_O_WORKDIR $PBS_JOBNAME $RESULTDIR input
 
 # 将输入参数传入网格和fluent
-python input.py
+# python input.py
 
 fluent 3ddp -g -ssh -pdefault -t$NP -cnf=$PBS_NODEFILE -i $PBS_JOBNAME.jou -cflush >>output.log 2>&1
 
@@ -28,7 +36,7 @@ fluent 3ddp -g -ssh -pdefault -t$NP -cnf=$PBS_NODEFILE -i $PBS_JOBNAME.jou -cflu
 cfdpost -batch $PBS_JOBNAME.cse
 
 #生成output文件输出参数结果给代理模型
-python output.py
+python3 control.py $PBS_O_WORKDIR $PBS_JOBNAME $RESULTDIR output
 
 conda deactivate
 

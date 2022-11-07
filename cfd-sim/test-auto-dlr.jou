@@ -1,6 +1,6 @@
-(define name "test-auto-dlr/")
-(define path "./cfd-sim/")
-(define resultdir "./cfd-sim/results/")
+(define name test-auto-dlr/)
+(define path ./cfd-sim/)
+(define resultdir ./cfd-sim/results/)
 
 ;to read the case and data file
 (define casefile (string-append "rc " path name ".cas.h5"))
@@ -13,9 +13,9 @@
 /solve/iterate 100
 
 ;to set the input parameters
-define/parameters/input-parameters/edit airflow airflow airflow-seed
-define/parameters/input-parameters/edit fuelflow fuelflow fuelflow-seed
-define/parameters/input-parameters/edit inlettem inlettem inlettem-seed
+define/parameters/input-parameters/edit airflow airflow 0.01762
+define/parameters/input-parameters/edit fuelflow fuelflow 0.000696
+define/parameters/input-parameters/edit inlettem inlettem 330.0
 
 ;to save the cas now
 

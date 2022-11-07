@@ -1,7 +1,7 @@
 '''
 Author: wanglei
 Date: 2022-11-03 15:59:29
-LastEditTime: 2022-11-03 21:21:59
+LastEditTime: 2022-11-07 15:29:45
 Description: Pass the working directory from the pbs file to fluent, 
 cfdpost and other softwares.
 '''
@@ -31,4 +31,4 @@ def pathconvey(file, pathdict, rootpath, jobname):
     end = file[file.rfind('.'):]
     for key, value in pathdict.items():
         alter("%s.bak" % file, key, "%s/" % value)
-    move("%s.bak" % file, "%s/%s.%s" % (rootpath, jobname, end))
+    move("%s.bak" % file, "%s/%s%s" % (rootpath, jobname, end))

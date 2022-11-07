@@ -1,7 +1,7 @@
 # 传入路径
-!$rootpath = rootpath-seed;
-!$jobname = jobname-seed;
-!$resultdir = resultdir-seed;
+!$rootpath = ./cfd-sim/;
+!$jobname = test-auto-dlr/;
+!$resultdir = ./cfd-sim/results/;
 !$datapath = $rootpath.$jobname.".dat.h5";
 !$pic_vel = $resultdir."vel.png";
 !print "$pic_vel\n";
