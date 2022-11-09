@@ -30,5 +30,5 @@ def pathconvey(file, pathdict, rootpath, jobname):
     copyfile(file, "%s.bak" % file)
     end = file[file.rfind('.'):]
     for key, value in pathdict.items():
-        alter("%s.bak" % file, key, "%s/" % value)
-    move("%s.bak" % file, "%s/%s%s" % (rootpath, jobname, end))
+        alter("%s.bak" % file, key, "%s" % value)
+    move("%s.bak" % file, "%s%s%s" % (rootpath, jobname, end))

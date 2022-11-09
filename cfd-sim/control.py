@@ -13,9 +13,9 @@ import sys, os
 # rootpath = os.path.abspath(sys.argv[1])
 
 if __name__ == '__main__':
-    rootpath = sys.argv[1]
+    rootpath = sys.argv[1]+"/"
     jobname = sys.argv[2]
-    resultdir = sys.argv[3]
+    resultdir = sys.argv[3]+"/"
     module = sys.argv[4]
 
     if module == "input":
@@ -26,22 +26,22 @@ if __name__ == '__main__':
         }
 
         ## 向cse文件传入路径
-        file = "%s/seed/cfdpost-seed.cse" % rootpath
+        file = "%sseed/cfdpost-seed.cse" % rootpath
         pathconvey(file, pathdict, rootpath, jobname)
 
         ## 向jou文件传入路径
-        file = "%s/seed/simulation.jou" % rootpath
+        file = "%sseed/simulation.jou" % rootpath
         pathconvey(file, pathdict, rootpath, jobname)
 
         ## 读取输入参数
-        INPUT = inputparas('%s/input' % rootpath)
+        INPUT = inputparas('%sinput' % rootpath)
         ## 写入fluent脚本
-        input4fluent(INPUT, inputdict, '%s/%s.jou' % (rootpath, jobname))
+        input4fluent(INPUT, inputdict, '%s%s.jou' % (rootpath, jobname))
     elif module == "output":
         ## 读取输出表
-        INPUT = inputparas('%s/input' % rootpath)
-        OUTPUT = fluentoutputs(outputdict, '%s/fluent-outputs.out' % resultdir)
+        INPUT = inputparas('%sinput' % rootpath)
+        OUTPUT = fluentoutputs(outputdict, '%sfluent-outputs.out' % resultdir)
         ## 将输入输出写入cases文件
-        casesDataAppend(OUTPUT,'%s/seed/casesdata.dat'%rootpath,INPUT)
-    elif module == "optimize":
-        ## 根据cases文件生成
+        casesDataAppend(OUTPUT,'%sseed/casesdata.dat'%rootpath,INPUT)
+    # elif module == "optimize":
+    #     ## 根据cases文件生成

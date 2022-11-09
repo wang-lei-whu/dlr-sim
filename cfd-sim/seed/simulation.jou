@@ -17,7 +17,9 @@ define/parameters/input-parameters/edit airflow airflow airflow-seed
 define/parameters/input-parameters/edit fuelflow fuelflow fuelflow-seed
 define/parameters/input-parameters/edit inlettem inlettem inlettem-seed
 
-;to save the cas now
+;to save the cas/dat now
+(define savepath (string-append "file/write-case-data " resultdir "/" name))
+(ti-menu-load-string savepath)
 
 ; to simulate the conbusion
 /solve/patch fluid () temperature 1500
@@ -25,6 +27,11 @@ define/parameters/input-parameters/edit inlettem inlettem inlettem-seed
 (ti-menu-load-string autosavepath)
 
 /solve/iterate 500
+yes
+
+;to save the cas/dat now
+(define savepath (string-append "file/write-case-data " resultdir "/" name))
+(ti-menu-load-string savepath)
 yes
 
 ;to export the output parameters into file
