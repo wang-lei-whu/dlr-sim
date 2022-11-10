@@ -4,5 +4,3 @@ cfd-sim/results
 *.trn
 *.cas.h5
 *.dat.h5
-cfd-sim/*.jou
-cfd-sim/*.cse
