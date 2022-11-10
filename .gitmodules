@@ -1,3 +1,3 @@
-[submodule "sm_optimized"]
-	path = sm_optimized
+[submodule "cfd-sim/sm_optimized"]
+	path = cfd-sim/sm_optimized
 	url = git@github.com:wang-lei-whu/sm_optimized
