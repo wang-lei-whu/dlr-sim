@@ -1,7 +1,7 @@
 # 传入路径
-!$rootpath = /home/wanglei/dlr-sim/cfd-sim/;
-!$jobname = test-auto-dlr;
-!$resultdir = /home/wanglei/dlr-sim/cfd-sim/results/;
+!$rootpath = "/home/wanglei/dlr-sim/cfd-sim/";
+!$jobname = "test-auto-dlr";
+!$resultdir = "/home/wanglei/dlr-sim/cfd-sim/results/";
 !$datapath = $rootpath.$jobname.".dat.h5";
 !$pic_vel = $resultdir."vel.png";
 !print "$pic_vel\n";

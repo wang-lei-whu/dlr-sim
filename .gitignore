@@ -1,2 +1,8 @@
 cfd-sim/seed/__pycache__/*.pyc
-cfd-sim/seed/__pycache__/input.cpython-39.pyc
+cfd-sim/seed/__pycache__
+cfd-sim/results
+*.trn
+*.cas.h5
+*.dat.h5
+cfd-sim/*.jou
+cfd-sim/*.cse

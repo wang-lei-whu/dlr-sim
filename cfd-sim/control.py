@@ -1,7 +1,7 @@
 '''
 Author: wanglei
 Date: 2022-11-03 20:41:44
-LastEditTime: 2022-11-07 17:54:47
+LastEditTime: 2022-11-10 17:25:17
 Description: Do not edit
 '''
 from seed.pathconvey import alter, pathconvey
@@ -43,5 +43,6 @@ if __name__ == '__main__':
         OUTPUT = fluentoutputs(outputdict, '%sfluent-outputs.out' % resultdir)
         ## 将输入输出写入cases文件
         casesDataAppend(OUTPUT,'%sseed/casesdata.dat'%rootpath,INPUT)
+        casesDataAppend(OUTPUT,'%scasedata.dat'%resultdir,INPUT)
     # elif module == "optimize":
     #     ## 根据cases文件生成

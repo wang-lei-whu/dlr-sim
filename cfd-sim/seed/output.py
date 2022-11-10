@@ -1,7 +1,7 @@
 '''
 Author: wanglei
 Date: 2022-11-03 15:59:29
-LastEditTime: 2022-11-07 17:50:45
+LastEditTime: 2022-11-10 17:31:41
 Description: output workflow definition
 '''
 
@@ -21,7 +21,7 @@ def fluentoutputs(dict,file)->np.ndarray:
         for line in fid:
             for key in dict0:
                 if not re.search(key,line) is None:
-                    output[dict0[key]]=float(re.search("\d*\.*\d*e\+\\d*",line,re.I).group())
+                    output[dict0[key]]=float(re.search("(?<=\s)\d*\.+\d*e.\d*",line,re.I).group())
                     dict0.pop(key)
                     break
     return output

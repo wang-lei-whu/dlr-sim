@@ -1,6 +1,6 @@
-(define name test-auto-dlr)
-(define path /home/wanglei/dlr-sim/cfd-sim/)
-(define resultdir /home/wanglei/dlr-sim/cfd-sim/results/)
+(define name "test-auto-dlr")
+(define path "/home/wanglei/dlr-sim/cfd-sim/")
+(define resultdir "/home/wanglei/dlr-sim/cfd-sim/results/")
 
 ;to read the case and data file
 (define casefile (string-append "rc " path name ".cas.h5"))
@@ -9,8 +9,8 @@
 (ti-menu-load-string  datfile)
   
 ; to initialize the velocity field
-/file/auto-save/data-frequency 100
-/solve/iterate 100
+; /file/auto-save/data-frequency 100
+; /solve/iterate 100
 
 ;to set the input parameters
 define/parameters/input-parameters/edit airflow airflow 0.01762
@@ -26,8 +26,8 @@ define/parameters/input-parameters/edit inlettem inlettem 330.0
 (define autosavepath (string-append "file/auto-save/root-name " resultdir "/" name))
 (ti-menu-load-string autosavepath)
 
-/solve/iterate 500
-yes
+;/solve/iterate 500
+;yes
 
 ;to save the cas/dat now
 (define savepath (string-append "file/write-case-data " resultdir "/" name))
