@@ -1,9 +1,3 @@
-###
- # @Author: wanglei
- # @Date: 2022-11-03 15:59:29
- # @LastEditTime: 2022-11-10 19:39:44
- # @Description: Do not edit
-### 
 #!/bin/bash
 
 #PBS -N FLUENT_DLR
@@ -14,14 +8,14 @@
 #PBS -M 2976367208@qq.com
 
 source /home/wanglei/.bashrc
-conda activate sm_optimized
 cd  $PBS_O_WORKDIR
 date > output.log 2>&1
 
 export RESULTDIR=$PBS_O_WORKDIR/results
 mkdir $RESULTDIR
+rm $RESULTDIR/casedata.dat
 touch $RESULTDIR/casedata.dat
-
+export NP=`wc -l < $PBS_NODEFILE`
 
 conda activate sm_optimized
 
@@ -37,7 +31,7 @@ function  pythoninput (){
     fi
 }
 function fluentcal(){
-    fluent 3ddp -g -ssh -pdefault -t32 -i $PBS_JOBNAME.jou >>output.log 2>&1
+    fluent 3ddp -g -ssh -pdefault -t$NP -cnf=$PBS_NODEFILE -i $PBS_JOBNAME.jou >>output.log 2>&1
     if [ $? -eq 0 ]; then
         echo "fluent calculation succeed"
     else
@@ -64,6 +58,7 @@ function pythonoutput(){
     fi
 }
 
+
 ## 处理参数
 if [ ! -n "$1" ] ;then
     echo "do all works"
@@ -72,12 +67,31 @@ if [ ! -n "$1" ] ;then
     cfdpostcal
     pythonoutput
 else
-    echo "do output work only"
-    pythonoutput
+    case $1 in 
+    4) 
+        pythonoutput;;
+    3)
+        cfdpostcal;;
+    2)
+        fluentcal;;
+    1)
+        pythoninput;;
+    0)
+        bash cleanup*.sh
+        mv *.jou $RESULTDIR
+        mv *.cse $RESULTDIR
+        mv *.log $RESULTDIR;;
+    -h)
+        echo '      0：清理生成文件
+        1：进行变量输入
+        2：进行fluent运算
+        3：进行cfdpost绘图
+        4：进行python后处理
+        -h:显示帮助
+        空：执行全流程';;
+    *)
+        echo -n "unknown parameter given";;
+    esac
 fi
 
 conda deactivate
-bash cleanup*.sh
-mv *.jou $RESULTDIR
-mv *.cse $RESULTDIR
-mv *.log $RESULTDIR

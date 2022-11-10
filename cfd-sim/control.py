@@ -1,13 +1,12 @@
 '''
 Author: wanglei
 Date: 2022-11-03 20:41:44
-LastEditTime: 2022-11-10 17:25:17
+LastEditTime: 2022-11-10 21:13:30
 Description: Do not edit
 '''
 from seed.pathconvey import alter, pathconvey
 from seed.output import outputdict, fluentoutputs,casesDataAppend
-from seed.input import inputdict, input4fluent, inputparas
-
+from seed.input import inputdict, input4fluent, inputparas,inputtranslate,inputinitialdict
 import sys, os
 # rootpath =   # 路径尽量传绝对路径
 # rootpath = os.path.abspath(sys.argv[1])
@@ -35,14 +34,16 @@ if __name__ == '__main__':
 
         ## 读取输入参数
         INPUT = inputparas('%sinput' % rootpath)
+        INPUT_trans = inputtranslate(INPUT,inputinitialdict,inputdict)
         ## 写入fluent脚本
-        input4fluent(INPUT, inputdict, '%s%s.jou' % (rootpath, jobname))
+        input4fluent(INPUT_trans, inputdict, '%s%s.jou' % (rootpath, jobname))
     elif module == "output":
         ## 读取输出表
         INPUT = inputparas('%sinput' % rootpath)
+        INPUT_trans = inputtranslate(INPUT,inputinitialdict,inputdict)
         OUTPUT = fluentoutputs(outputdict, '%sfluent-outputs.out' % resultdir)
         ## 将输入输出写入cases文件
         casesDataAppend(OUTPUT,'%sseed/casesdata.dat'%rootpath,INPUT)
-        casesDataAppend(OUTPUT,'%scasedata.dat'%resultdir,INPUT)
+        casesDataAppend(OUTPUT,'%scasedata.dat'%resultdir,INPUT_trans)
     # elif module == "optimize":
     #     ## 根据cases文件生成

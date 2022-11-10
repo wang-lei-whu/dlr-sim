@@ -1,0 +1,53 @@
+(define name "test-auto-dlr")
+(define path "/home/wanglei/dlr-sim/cfd-sim/")
+(define resultdir "/home/wanglei/dlr-sim/cfd-sim/results/")
+
+;to read the case and data file
+
+(define casefile (string-append "rc " path name ".cas.h5"))
+(define datfile (string-append "rd " path name ".dat.h5"))
+(ti-menu-load-string casefile)
+(ti-menu-load-string  datfile)
+  
+; to initialize the velocity field
+; /file/auto-save/data-frequency 100
+; /solve/iterate 100
+
+;to set the input parameters
+
+define/parameters/input-parameters/edit airflow airflow airflow-seed
+define/parameters/input-parameters/edit fuelflow fuelflow fuelflow-seed
+define/parameters/input-parameters/edit inlettem inlettem inlettem-seed
+
+;to save the cas/dat now
+
+(define savepath (string-append "file/write-case-data " resultdir "/" name))
+(ti-menu-load-string savepath)
+
+; to simulate the conbusion
+
+/solve/patch blk-1 () temperature 1500
+(define autosavepath (string-append "file/auto-save/root-name " resultdir "/" name))
+(ti-menu-load-string autosavepath)
+
+;/solve/iterate 500
+;yes
+
+;to save the cas/dat now
+
+(define savepath (string-append "file/write-case-data " resultdir "/" name))
+(ti-menu-load-string savepath)
+yes
+
+;to export the output parameters into file
+
+(define outputspath (string-append "define/parameters/output-parameters/write-all-to-file " resultdir "/fluent-outputs.out"))
+(ti-menu-load-string outputspath)
+no
+yes
+
+
+;exit the simulation
+
+exit
+yes

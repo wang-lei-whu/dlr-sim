@@ -2,7 +2,7 @@
 ###
  # @Author: wanglei
  # @Date: 2022-11-03 15:59:29
- # @LastEditTime: 2022-11-10 18:02:01
+ # @LastEditTime: 2022-11-10 20:27:40
  # @Description: Do not edit
 ### 
 # cd cfd-sim
@@ -68,12 +68,32 @@ if [ ! -n "$1" ] ;then
     cfdpostcal
     pythonoutput
 else
-    echo "do output work only"
-    pythonoutput
+    case $1 in 
+    4) 
+        pythonoutput;;
+    3)
+        cfdpostcal;;
+    2)
+        fluentcal;;
+    1)
+        pythoninput;;
+    0)
+        bash cleanup*.sh
+        mv *.jou $RESULTDIR
+        mv *.cse $RESULTDIR
+        mv *.log $RESULTDIR;;
+    -h)
+        echo '      0：清理生成文件
+        1：进行变量输入
+        2：进行fluent运算
+        3：进行cfdpost绘图
+        4：进行python后处理
+        -h:显示帮助
+        空：执行全流程';;
+    *)
+        echo -n "unknown parameter given";;
+    esac
 fi
 
 conda deactivate
-bash cleanup*.sh
-mv *.jou $RESULTDIR
-mv *.cse $RESULTDIR
-mv *.log $RESULTDIR
+

@@ -1,7 +1,7 @@
 '''
 Author: wanglei
 Date: 2022-11-03 15:59:29
-LastEditTime: 2022-11-03 21:06:56
+LastEditTime: 2022-11-10 21:09:22
 Description: read input data 
 '''
 
@@ -37,3 +37,19 @@ inputdict = {
     "fuelflow-seed":1,
     "inlettem-seed":2
 }
+
+## 输入参数归一化
+## 思路：区基准值，标定变化范围后最大最小值归一化
+inputinitialdict = {
+    "airflow-seed":np.array([0.01762,0.9,1.1]),
+    "fuelflow-seed":np.array([0.000696,0.9,1.1]),
+    "inlettem-seed":np.array([330,1,2])
+}
+
+def inputtranslate(input,inputinitialdict,inputdict) ->np.ndarray:
+    res = np.zeros(input.size)
+    for key,value in inputinitialdict.items():
+        min = value[0]*value[1]## 映射-1
+        max = value[0]*value[2]## 映射1
+        res[inputdict[key]] = (input[inputdict[key]]+1)/2*(max-min)+min
+    return res
