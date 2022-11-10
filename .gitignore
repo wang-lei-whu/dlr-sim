@@ -4,3 +4,7 @@ cfd-sim/results
 *.trn
 *.cas.h5
 *.dat.h5
+*.pkl
+*.npz
+cache-*
+fig-*

@@ -1,7 +1,7 @@
 ###
  # @Author: wanglei
  # @Date: 2022-11-03 15:59:29
- # @LastEditTime: 2022-11-07 15:41:05
+ # @LastEditTime: 2022-11-10 19:39:44
  # @Description: Do not edit
 ### 
 #!/bin/bash
@@ -20,30 +20,64 @@ date > output.log 2>&1
 
 export RESULTDIR=$PBS_O_WORKDIR/results
 mkdir $RESULTDIR
+touch $RESULTDIR/casedata.dat
 
-# 检查核数
-export NP=`wc -l < $PBS_NODEFILE`
 
-#生成本次任务的控制脚本并输入参数
-python3 control.py $PBS_O_WORKDIR $PBS_JOBNAME $RESULTDIR input
+conda activate sm_optimized
 
-# 将输入参数传入网格和fluent
-# python input.py
+function  pythoninput (){
 
-fluent 3ddp -g -ssh -pdefault -t$NP -cnf=$PBS_NODEFILE -i $PBS_JOBNAME.jou -cflush >>output.log 2>&1
+    python3 control.py $PBS_O_WORKDIR $PBS_JOBNAME $RESULTDIR "input" >>output.log 2>&1
 
-##这里需要考虑cfdpost读入数据名字不同
-cfdpost -batch $PBS_JOBNAME.cse
+    if [ $? -eq 0 ]; then
+        echo "python input succeed"
+    else
+        echo "python input failed"
+        exit 1
+    fi
+}
+function fluentcal(){
+    fluent 3ddp -g -ssh -pdefault -t32 -i $PBS_JOBNAME.jou >>output.log 2>&1
+    if [ $? -eq 0 ]; then
+        echo "fluent calculation succeed"
+    else
+        echo "fluent calculation failed"
+        exit 2
+    fi
+}
+function cfdpostcal(){
+    cfdpost -batch $PBS_JOBNAME.cse >>output.log 2>&1
+    if [ $? -eq 0 ]; then
+        echo "cfdpost calculation succeed"
+    else
+        echo "cfdpost calculation failed"
+        exit 3
+    fi
+}
+function pythonoutput(){
+    python3 control.py $PBS_O_WORKDIR $PBS_JOBNAME $RESULTDIR "output" >>output.log 2>&1
+    if [ $? -eq 0 ]; then
+        echo "python output succeed"
+    else
+        echo "python output failed"
+        exit 4
+    fi
+}
 
-#生成output文件输出参数结果给代理模型
-python3 control.py $PBS_O_WORKDIR $PBS_JOBNAME $RESULTDIR output
+## 处理参数
+if [ ! -n "$1" ] ;then
+    echo "do all works"
+    pythoninput
+    fluentcal
+    cfdpostcal
+    pythonoutput
+else
+    echo "do output work only"
+    pythonoutput
+fi
 
 conda deactivate
-
-
-mv *.h5 $RESULTDIR
-mv $PBS_JOBNAME* $RESULTDIR
-mv output.log $RESULTDIR
-mv $RESULTDIR $RESULTDIR-$PBS_JOBNAME
-
-date >> output.log 2>&1
+bash cleanup*.sh
+mv *.jou $RESULTDIR
+mv *.cse $RESULTDIR
+mv *.log $RESULTDIR
