@@ -2,7 +2,7 @@
 !$rootpath = rootpath-seed;
 !$jobname = jobname-seed;
 !$resultdir = resultdir-seed;
-!$datapath = $rootpath.$jobname.".dat.h5";
+!$datapath = $resultdir.$jobname.".dat.h5";
 !$pic_vel = $resultdir."vel.png";
 !print "$pic_vel\n";
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#PBS -N FLUENT_DLR
+#PBS -N fluent-dlr
 #PBS -o output_f
 #PBS -j oe
 #PBS -l nodes=2:ppn=64
@@ -8,6 +8,32 @@
 #PBS -M 2976367208@qq.com
 
 source /home/wanglei/.bashrc
+
+if [ 0"$PBS_O_WORKDIR" = "0" ]; then
+  echo "\$PBS_O_WORKDIR not found, using this dir"
+  PBS_O_WORKDIR=`pwd`
+fi
+
+if [ 0"$PBS_NODEFILE" = "0" ]; then
+    echo "\$PBS_NODEFILE not found, NP using 32"
+    NP=32
+    fluentmode=0
+else
+    NP=`wc -l < $PBS_NODEFILE`
+    fluentmode=1
+fi
+
+if [ 0"$PBS_JOBNAME" = "0" ]; then
+    echo "\$JOBNAME not set, using python to set"
+    PBS_JOBNAME=$(python seed/readname.py)
+fi
+echo "\$PBS_O_WORKDIR:$PBS_O_WORKDIR"
+echo "\$NP:$NP"
+echo "\$PBS_JOBNAME:$PBS_JOBNAME"
+
+NP=`wc -l < $PBS_NODEFILE`
+fluentmode=1
+
 cd  $PBS_O_WORKDIR
 date > output.log 2>&1
 
@@ -15,12 +41,27 @@ export RESULTDIR=$PBS_O_WORKDIR/results
 mkdir $RESULTDIR
 rm $RESULTDIR/casedata.dat
 touch $RESULTDIR/casedata.dat
-export NP=`wc -l < $PBS_NODEFILE`
 
 conda activate sm_optimized
 
-function  pythoninput (){
 
+function fluentcal(){
+    echo "start fluent calculation"
+    if [ $fluentmode -eq 1 ];then
+        fluent 3ddp -g -ssh -pdefault -t$NP -cnf=$PBS_NODEFILE -i $PBS_JOBNAME.jou -cflush >>output.log 2>&1
+    else
+        fluent 3ddp -g -ssh -pdefault -t$NP -i $PBS_JOBNAME.jou >>output.log 2>&1
+    fi 
+    if [ $? -eq 0 ]; then
+        echo "fluent calculation succeed"
+    else
+        echo "fluent calculation failed"
+        exit 2
+    fi
+}
+
+function  pythoninput (){
+    echo "start python input"
     python3 control.py $PBS_O_WORKDIR $PBS_JOBNAME $RESULTDIR "input" >>output.log 2>&1
 
     if [ $? -eq 0 ]; then
@@ -30,16 +71,8 @@ function  pythoninput (){
         exit 1
     fi
 }
-function fluentcal(){
-    fluent 3ddp -g -ssh -pdefault -t$NP -cnf=$PBS_NODEFILE -i $PBS_JOBNAME.jou >>output.log 2>&1
-    if [ $? -eq 0 ]; then
-        echo "fluent calculation succeed"
-    else
-        echo "fluent calculation failed"
-        exit 2
-    fi
-}
 function cfdpostcal(){
+    echo "start cfdpost calculation"
     cfdpost -batch $PBS_JOBNAME.cse >>output.log 2>&1
     if [ $? -eq 0 ]; then
         echo "cfdpost calculation succeed"
@@ -49,6 +82,7 @@ function cfdpostcal(){
     fi
 }
 function pythonoutput(){
+    echo "start python-output now"
     python3 control.py $PBS_O_WORKDIR $PBS_JOBNAME $RESULTDIR "output" >>output.log 2>&1
     if [ $? -eq 0 ]; then
         echo "python output succeed"
@@ -57,17 +91,42 @@ function pythonoutput(){
         exit 4
     fi
 }
+function renamedata(){
+    echo 'Please note that only one case/dat file can exist in the folder!'
+    mv *.cas.h5 $PBS_JOBNAME.cas.h5
+    local flag=$?
+    mv *.dat.h5 $PBS_JOBNAME.dat.h5
+    if [ $flag -a $? ]; then
+        echo 'case/data file rename succeed'
+    else
+        echo 'case/data file rename failed'
+        exit 5
+    fi
+        
+}
+function clear(){
+    bash cleanup*.sh
+    rm *.trn
+    mv *.jou $RESULTDIR
+    mv *.cse $RESULTDIR
+    mv output* $RESULTDIR
+    mv *.log $RESULTDIR
+}
 
 
 ## 处理参数
 if [ ! -n "$1" ] ;then
     echo "do all works"
+    renamedata
     pythoninput
     fluentcal
     cfdpostcal
     pythonoutput
+    clear
 else
     case $1 in 
+    5)
+        renamedata;;
     4) 
         pythonoutput;;
     3)
@@ -77,16 +136,14 @@ else
     1)
         pythoninput;;
     0)
-        bash cleanup*.sh
-        mv *.jou $RESULTDIR
-        mv *.cse $RESULTDIR
-        mv *.log $RESULTDIR;;
+        clear;;
     -h)
         echo '      0：清理生成文件
         1：进行变量输入
         2：进行fluent运算
         3：进行cfdpost绘图
         4：进行python后处理
+        5：将case，data文件重新命名为$PBS_JOBNAME
         -h:显示帮助
         空：执行全流程';;
     *)

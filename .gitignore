@@ -8,3 +8,4 @@ cfd-sim/results
 *.npz
 cache-*
 fig-*
+cfd-sim/seed/casesdata.dat
